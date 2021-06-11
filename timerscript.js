@@ -432,6 +432,101 @@ function resetTimer(){
 	updateTime(0, "seconds");
 }
 
+function setTimerValue(node){
+	var hoursCurrentValue = parseInt(timerHours.innerHTML);
+	var minutesCurrentValue = parseInt(timerMinutes.innerHTML);
+	var secondsCurrentValue = parseInt(timerSeconds.innerHTML);
+	var value;
+	
+	var nodeClassNames = node.nodeName === "svg" ? node.className.baseVal.split(" ") : node.className.split(" ");
+	
+	if(containsClass(node, "timerEditUpArrow") && node.parentNode.id === "hours"){
+		if(activeMode === "timer"){
+			if(hoursCurrentValue >= 99){
+				value = 0;
+			}
+			else{
+				value = hoursCurrentValue + 1;
+			}
+			updateTime(value, "hours");
+		}
+
+		else if(activeMode === "alarm"){
+			if(hoursCurrentValue >= 24){
+				value = 0;
+			}
+			else{
+				value = hoursCurrentValue + 1;
+			}
+			updateTime(value, "hours");
+		}
+	}
+	else if(containsClass(node, "timerEditDownArrow") && node.parentNode.id === "hours"){
+		if(activeMode === "timer"){
+			if(hoursCurrentValue === 0){
+				value = 99;
+			}
+			else{
+				value = hoursCurrentValue - 1;
+			}
+			updateTime(value, "hours");
+		}
+		
+		else if(activeMode === "alarm"){
+			if(hoursCurrentValue === 0){
+				value = 24;
+			}
+			else{
+				value = hoursCurrentValue - 1;
+			}
+			updateTime(value, "hours");
+		}
+	}
+	else if(containsClass(node, "timerEditUpArrow") && node.parentNode.id === "minutes"){
+		if(minutesCurrentValue === 59){
+			value = 0;
+		}
+		else{
+			value = minutesCurrentValue + 1;
+		}
+		updateTime(value, "minutes");
+	}
+	else if(containsClass(node, "timerEditDownArrow") && node.parentNode.id === "minutes"){
+		if(minutesCurrentValue === 0){
+			value = 59;
+		}
+		else{
+			value = minutesCurrentValue - 1;
+		}
+		updateTime(value, "minutes");
+	}
+	else if(containsClass(node, "timerEditUpArrow") && node.parentNode.id === "seconds"){
+		if(secondsCurrentValue === 59){
+			value = 0;
+		}
+		else{
+			value = secondsCurrentValue + 1;
+		}
+		updateTime(value, "seconds");
+	}
+	else if(containsClass(node, "timerEditDownArrow") && node.parentNode.id === "seconds"){
+		if(secondsCurrentValue === 0){
+			value = 59;
+		}
+		else{
+			value = secondsCurrentValue - 1;
+		}
+		updateTime(value, "seconds");
+	}
+	
+	if(activeMode === "timer"){
+		timerSaveVar.hours = hoursCurrentValue;
+		timerSaveVar.minutes = minutesCurrentValue;
+		timerSaveVar.seconds = secondsCurrentValue;
+	}
+
+}
+
 function stopWatch(){
 	
 	++options.totalSeconds;
@@ -453,4 +548,54 @@ function stopWatch(){
 	}
 	
 	stopWatchSaveVar = {"hours": hours, "minutes": minutes, "seconds": seconds};
+}
+
+function timer(){
+	var hoursCurrentValue = parseInt(timerHours.innerHTML);
+	var minutesCurrentValue = parseInt(timerMinutes.innerHTML);
+	var secondsCurrentValue = parseInt(timerSeconds.innerHTML);
+	
+	if(!timerSaveVar.hours){
+		timerSaveVar.hours = hoursCurrentValue;
+		timerSaveVar.minutes = minutesCurrentValue;
+		timerSaveVar.seconds = secondsCurrentValue;
+	}
+	
+	
+	if(timerSaveVar.seconds == 0){
+		
+		if(timerSaveVar.minutes == 0){
+			if(timerSaveVar.hours != 0){
+				timerSaveVar.hours = timerSaveVar.hours - 1;
+				timerSaveVar.minutes = 60;
+				if(options.updateNumbersOnScreenTimer == true){
+					updateTime(timerSaveVar.hours, "hours");
+					updateTime(timerSaveVar.minutes, "minutes");
+				}
+			}
+			
+			if(timerSaveVar.hours === 0 && timerSaveVar.minutes === 0 && timerSaveVar.seconds === 0){
+				disableArrows(false);
+				options.activeTimer = null;
+				clearInterval(options.intervalIdTimer);
+			}
+		}
+		
+		if(timerSaveVar.minutes != 0){
+			timerSaveVar.minutes = timerSaveVar.minutes - 1;
+			timerSaveVar.seconds = 60;
+			if(options.updateNumbersOnScreenTimer == true){
+					updateTime(timerSaveVar.minutes, "minutes");
+					updateTime(timerSaveVar.seconds, "seconds");
+			}
+		}
+	}
+	
+	if(timerSaveVar.seconds != 0){
+		timerSaveVar.seconds = timerSaveVar.seconds - 1;
+		if(options.updateNumbersOnScreenTimer == true){
+			updateTime(timerSaveVar.seconds, "seconds");
+		}
+	}
+	
 }
