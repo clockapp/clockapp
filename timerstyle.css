@@ -1,0 +1,281 @@
+*{
+	font-family: helvetica;
+	user-select: none;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+    padding: 0;
+	margin: 0;  
+	align-items: center;
+	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#cbccc8)) fixed;
+	display: flex;
+}
+
+button.changeMode, button.changeState {
+	border: none;
+	padding: 15px 32px;
+	text-align: center;
+	text-decoration: none;
+	font-size: 16px;
+	background-color: white;
+	color: black;
+	border: 2px solid #e7e7e7;
+}
+
+.alarmButton{
+	border: none;
+	text-align: center;
+	text-decoration: none;
+	font-size: 16px;
+	background-color: white;
+	color: black;
+	border: 2px solid #e7e7e7;
+}
+
+h1{
+	font-size: 69px;
+	text-align: center;
+}
+
+#timer{
+	margin: 0 auto;
+    width: 86%;
+	position: relative;
+}
+
+
+.centerWrapper{
+	margin: 0 auto;
+}
+
+.changeModeWrapper{
+	margin: 0 auto;
+	width: 378px;
+}
+
+.changeStateWrapper{
+	margin: 0 auto;
+	width: 322px;
+}
+
+.disabled{
+	opacity: 0.5;
+}
+
+.timer{
+	display: inline-block;
+	position: relative;
+}
+
+.timerItem{
+	font-size: 72px;
+	display: inline-block;
+	position: relative;
+	border: 1px solid #d3d3d3;
+    padding: 8px;
+    border-radius: 8px;
+	box-shadow: inset 0px 0px 20px -6px rgba(0,0,0,0.9);
+	margin: 0 3px;
+	width: 80px;
+	height: 80px;
+}
+
+.timerItemLabel{
+	font-size: 16px;
+	position: absolute;
+	left: 34px;
+    top: 100px;
+}
+
+.timerSpanEdit{
+	width: 89%;
+    height: 72px;
+    vertical-align: top;
+    font-size: 64px;
+}
+
+.timerEditArrow{
+	display:none;
+}
+
+.timerEditUpArrow{
+	left: 11px;
+    top: -66px;
+    position: absolute;
+    width: 74px;
+}
+
+.timerEditDownArrow{
+	top: 96px;
+    left: 12px;
+    position: absolute;
+    width: 74px;
+}
+
+.alarmContainer{
+	display: none;
+	position: absolute;
+	top: -200px;
+	left: 270px;
+	width: 178px;
+	font-size: 46px;
+	padding: 15px;
+	background-color: #fff;
+    border: 1px solid #d3d3d3;
+    border-radius: 8px;
+    box-shadow: inset 0px 0px 20px -6px rgba(0,0,0,0.9);
+    margin: 0 3px 0 50px;
+}
+
+hr.alarmSplit{
+	border-bottom: 1px solid red;
+	margin-top: 35px;
+}
+
+/* container */
+#alarmItems{
+	list-style-type: none;
+	padding: 0;
+    margin: 0;
+}
+
+.selected{
+	box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
+}
+
+/* .alarmItem:hover{
+	box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
+} */
+
+.alarmItem{
+	position: relative;
+	padding: 8px;
+	padding-top: 14px;
+	border-radius: 8px;
+	background-color: #fbfbfb;
+	
+	/*TMP for new editable numbers in saved alarms*/
+	font-size: 46px;
+}
+
+.alarmSpan{
+	position: relative;
+	display: inline;
+}
+
+.alarmDoublePoint{
+	display: inline;
+}
+
+.none{
+	display: none;
+}
+
+.block {
+	display: block;
+}
+
+.inline-block {
+	display: inline-block;
+}
+
+
+.alarmItemEditArrow{
+	position: absolute;
+    width: 25px;
+}
+
+.alarmItemEditArrowUp{
+	left: 14px;
+    top: -16px;
+}
+
+.alarmItemEditArrowDown{
+	top: 41px;
+    left: 14px;
+}
+
+.alarmItemDropDownArrow{
+	position: absolute;
+    left: 46px;
+    top: 62px;
+	width: 30px;
+}
+
+.alarmItemActive{
+	display: inline;
+	width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    margin-left: 10px;
+}
+
+.alarmItemActive:focus {
+    outline: none;
+}
+
+.alarmItemOptions{
+	display: none;
+	position: relative;
+	margin-top: 42px;
+}
+
+.alarmItemDays{
+	padding: 0;
+	font-size: 15px;
+	font-weight: bold;
+	list-style: none;
+}
+
+.daysItem{
+	display: inline;
+	padding: 3px;
+}
+
+.daysItem .selected{
+	color: red !important;
+}
+
+.alarmItemInput{
+	width: 96%;
+    margin-bottom: 20px;
+	border-bottom: 1px solid black;
+    border-top: 0;
+    border-right: 0;
+    border-left: 0;
+}
+
+.alarmItemInputLabel{
+	font-size: 12px;
+	font-weight: bold;
+    position: absolute;
+    left: 0;
+    top: 16px;
+}
+
+.alarmItemInput:focus{
+    outline: 0;
+}
+
+.opened{
+	transform: rotate(180deg);
+}
+
+.alarmItemArrowImg{
+	width: 40px;
+	margin: 10px auto;
+}
+
+
+.changeMode{
+	margin-top: 90px;
+}
+
+.changeState{
+	margin-top: 10px;
+}
