@@ -29,6 +29,8 @@ function clickHandler(event){
 	else if(nodeId === "changeToStopWatch"){ return change("stopWatch") }
 	else if(nodeId === "changeToTimer"){ return change("timer") }
 	else if(nodeId === "changeToAlarm"){ return change("alarm") }
+	else if(nodeId === "alarmSaveButton"){ return saveAlarmItem() }
+	else if(nodeId === "alarmDeleteButton"){ return deleteAlarmItem() }
 	
 	if(node.nodeName === "g" || node.nodeName === "path"){
 		while(node.nodeName != "svg"){
@@ -79,7 +81,30 @@ function clickHandler(event){
 	}
 }
 
+function blurHandler(event){
+	var node = event.srcElement;
+	
+	if(containsClass(node, "timerSpanEdit")){
+		return typeInTimerValue(node, event);
+	}
+	
+}
+
+function keyHandler(event){
+	var node = event.srcElement;
+	
+	if(containsClass(node, "timerSpanEdit")){
+		return typeInTimerValue(node, event);
+	}
+}
+
 listen(document, "click", clickHandler);
+
+var inputNodes = document.getElementsByClassName("timerSpanEdit");
+for(i=0; i < inputNodes.length; i++){ 
+	listen(inputNodes[i], "blur", blurHandler);
+	listen(inputNodes[i], "keydown", keyHandler);
+}
 
 var timerHours = document.getElementById("timerHours");
 var timerMinutes = document.getElementById("timerMinutes");
@@ -90,6 +115,7 @@ var timerArrows = document.getElementsByClassName("timerEditArrow");
 
 printLabel(options.defaultMode);
 renderDefaultMode();
+
 
 function renderDefaultMode(){
 	if(options.defaultMode === "stopWatch"){
@@ -198,6 +224,24 @@ function toggleTimerItem(item, visible){
 				addClass(timerItems[i], "none");
 				removeClass(timerItems[i], "inline-block");
 			}
+		}
+	}
+}
+
+function toggleActionButtons(visible){
+	var controlButtons = document.getElementsByClassName("changeState");
+	
+	if(visible){
+		for(i=0; i < controlButtons.length; i++){
+			addClass(controlButtons[i], "inline-block")
+			removeClass(controlButtons[i], "none")
+		}
+	}
+	
+	else{
+		for(i=0; i < controlButtons.length; i++){
+			addClass(controlButtons[i], "none")
+			removeClass(controlButtons[i], "inline-block")
 		}
 	}
 }
@@ -349,26 +393,6 @@ function containsClass(node, classStr) {
 	}
 }
 
-function toggleActionButtons(visible){
-	var controlButtons = document.getElementsByClassName("changeState");
-	
-	if(visible){
-		for(i=0; i < controlButtons.length; i++){
-			addClass(controlButtons[i], "inline-block")
-			removeClass(controlButtons[i], "none")
-		}
-	}
-	
-	else{
-		for(i=0; i < controlButtons.length; i++){
-			addClass(controlButtons[i], "none")
-			removeClass(controlButtons[i], "inline-block")
-		}
-	}
-}
-
-
-
 function start(){
 	if(activeMode === "stopWatch"){
 		if(options.activeStopWatch == true){
@@ -431,6 +455,99 @@ function resetTimer(){
 	updateTime(0, "minutes");
 	updateTime(0, "seconds");
 }
+
+//Only timer and Alarm have these visible
+function typeInTimerValue(node, event){
+	var hoursCurrentValue = parseInt(timerHours.innerHTML);
+	var minutesCurrentValue = parseInt(timerMinutes.innerHTML);
+	var secondsCurrentValue = parseInt(timerSeconds.innerHTML);
+	var eventType = event.type;
+	
+	if(eventType === "click"){
+		if(node.nodeName !== "SPAN"){
+			node = node.children[2];
+		}
+		
+
+		if(containsClass(node, "inline-block")){
+			addClass(node, "none");
+			removeClass(node, "inline-block");
+			addClass(node.nextElementSibling, "inline-block");
+			removeClass(node.nextElementSibling, "none");
+
+			node.nextElementSibling.value = "";
+			node.nextElementSibling.focus();
+		}
+		
+		
+ 		if(node.parentNode.id === "hours"){
+			node.nextElementSibling.value = addZeros(hoursCurrentValue.toString(), 2);
+		}
+		else if(node.parentNode.id === "minutes"){
+			node.nextElementSibling.value = addZeros(minutesCurrentValue.toString(), 2);
+		}
+		
+		else if(node.parentNode.id === "seconds"){
+			node.nextElementSibling.value =  addZeros(secondsCurrentValue.toString(), 2);
+		}
+		
+	}
+	
+	else if(eventType === "blur"){
+		addClass(node, "none");
+		removeClass(node, "inline-block");
+		addClass(node.previousElementSibling, "inline-block");
+		removeClass(node.previousElementSibling, "none");
+		if(activeMode === "timer" && Number(node.value) > 59 && (node.parentNode.id === "minutes" || node.parentNode.id === "seconds")){
+			node.previousElementSibling.textContent = 59;
+		}
+		else if(activeMode === "alarm" && Number(node.value) > 24 && node.parentNode.id === "hours"){
+			node.previousElementSibling.textContent = 24;
+		}
+			
+		else if(activeMode === "alarm" && Number(node.value) > 59 && (node.parentNode.id === "minutes" || node.parentNode.id === "seconds")){
+			node.previousElementSibling.textContent = 59;
+		}
+		
+		else {
+			node.previousElementSibling.textContent = addZeros(node.value.toString(), 2);
+		}
+	}
+	
+	else if(eventType === "keydown"){
+		var key   = event.keyCode ? event.keyCode : event.which;
+		
+		if(key === 13){
+			addClass(node, "none");
+			removeClass(node, "inline-block");
+			addClass(node.previousElementSibling, "inline-block");
+			removeClass(node.previousElementSibling, "none");
+			node.previousElementSibling.textContent = addZeros(node.value.toString(), 2);
+		}
+		
+		else if (!( [8, 9, 27, 46, 110, 190].indexOf(key) !== -1 ||
+         (key == 65 && ( event.ctrlKey || event.metaKey  ) ) || 
+         (key >= 35 && key <= 40) ||
+         (key >= 48 && key <= 57 && !(event.shiftKey || event.altKey)) ||
+         (key >= 96 && key <= 105)
+       )) event.preventDefault();
+		
+	}
+	
+	if(activeMode === "timer"){
+		timerSaveVar.hours = hoursCurrentValue;
+		timerSaveVar.minutes = minutesCurrentValue;
+		timerSaveVar.seconds = secondsCurrentValue;
+	}
+	
+	else if(activeMode === "alarm"){
+		alarmSaveVar.hours = hoursCurrentValue;
+		alarmSaveVar.minutes = minutesCurrentValue;
+		alarmSaveVar.seconds = secondsCurrentValue;
+	}
+
+}
+
 
 function setTimerValue(node){
 	var hoursCurrentValue = parseInt(timerHours.innerHTML);
@@ -527,6 +644,9 @@ function setTimerValue(node){
 
 }
 
+/* Specific */
+
+/* StopWatch */
 function stopWatch(){
 	
 	++options.totalSeconds;
@@ -550,6 +670,7 @@ function stopWatch(){
 	stopWatchSaveVar = {"hours": hours, "minutes": minutes, "seconds": seconds};
 }
 
+/* Timer */
 function timer(){
 	var hoursCurrentValue = parseInt(timerHours.innerHTML);
 	var minutesCurrentValue = parseInt(timerMinutes.innerHTML);
@@ -600,6 +721,7 @@ function timer(){
 	
 }
 
+/* Alarm */
 function saveAlarmItem(){
 	//Get Values from Main Clock
 	var timerValues = [timerHours.innerHTML, ":", timerMinutes.innerHTML];
