@@ -81,12 +81,6 @@ function clickHandler(event){
 
 listen(document, "click", clickHandler);
 
-var inputNodes = document.getElementsByClassName("timerSpanEdit");
-for(i=0; i < inputNodes.length; i++){ 
-	listen(inputNodes[i], "blur", blurHandler);
-	listen(inputNodes[i], "keydown", keyHandler);
-}
-
 var timerHours = document.getElementById("timerHours");
 var timerMinutes = document.getElementById("timerMinutes");
 var timerSeconds = document.getElementById("timerSeconds");
