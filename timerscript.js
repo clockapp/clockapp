@@ -599,3 +599,311 @@ function timer(){
 	}
 	
 }
+
+function saveAlarmItem(){
+	//Get Values from Main Clock
+	var timerValues = [timerHours.innerHTML, ":", timerMinutes.innerHTML];
+	
+	//Array for Alarm items
+	var alarmList = document.getElementById("alarmItems");
+	
+	//Alarm Item
+	var listItem = document.createElement("li");
+	
+	//Alarm Item OptionsDropDown Arrow
+	var listArrow = document.createElement("div");
+	
+	var listEditArrowHourUpSvg = "<svg class='alarmItemEditArrowUp alarmItemEditArrow none' value='hUp' version='1.0' viewBox='0 0 200.000000 200.000000' preserveAspectRatio='xMidYMid meet'><g transform='translate(0.000000,200.000000) scale(0.100000,-0.100000)' fill='#000000' stroke='none'><path d='M537 1032 c-376 -376 -428 -432 -433 -464 -6 -32 -2 -41 24 -68 23 -23 39 -30 68 -30 37 0 52 13 404 365 339 338 368 365 400 365 32 0 61 -27 400 -365 359 -357 367 -365 406 -365 68 0 109 59 85 118 -7 16 -202 218 -434 450 -393 393 -425 422 -457 422 -32 0 -64 -30 -463 -428z'/></g></svg>";
+	var listEditArrowHourDownSvg = "<svg class='alarmItemEditArrowDown alarmItemEditArrow none' value='hDown' version='1.0' viewBox='0 0 200.000000 200.000000' preserveAspectRatio='xMidYMid meet'><g transform='translate(0.000000,200.000000) scale(0.100000,-0.100000)' fill='#000000' stroke='none'><path d='M132 1470 c-29 -27 -37 -64 -23 -98 7 -16 202 -218 434 -450 393 -393 425 -422 457 -422 32 0 64 30 463 428 376 376 428 432 433 464 6 32 2 41 -24 68 -23 23 -39 30 -68 30 -37 0 -52 -13 -404 -365 -339 -338 -368 -365 -400 -365 -32 0 -61 27 -400 365 -359 357 -367 365 -406 365 -27 0 -48 -7 -62 -20z'/></g></svg>";
+	var listEditArrowMinuteUpSvg = "<svg class='alarmItemEditArrowUp alarmItemEditArrow none' value='mUp' version='1.0' viewBox='0 0 200.000000 200.000000' preserveAspectRatio='xMidYMid meet'><g transform='translate(0.000000,200.000000) scale(0.100000,-0.100000)' fill='#000000' stroke='none'><path d='M537 1032 c-376 -376 -428 -432 -433 -464 -6 -32 -2 -41 24 -68 23 -23 39 -30 68 -30 37 0 52 13 404 365 339 338 368 365 400 365 32 0 61 -27 400 -365 359 -357 367 -365 406 -365 68 0 109 59 85 118 -7 16 -202 218 -434 450 -393 393 -425 422 -457 422 -32 0 -64 -30 -463 -428z'/></g></svg>";
+	var listEditArrowMinuteDownSvg = "<svg class='alarmItemEditArrowDown alarmItemEditArrow none' value='mDown' version='1.0' viewBox='0 0 200.000000 200.000000' preserveAspectRatio='xMidYMid meet'><g transform='translate(0.000000,200.000000) scale(0.100000,-0.100000)' fill='#000000' stroke='none'><path d='M132 1470 c-29 -27 -37 -64 -23 -98 7 -16 202 -218 434 -450 393 -393 425 -422 457 -422 32 0 64 30 463 428 376 376 428 432 433 464 6 32 2 41 -24 68 -23 23 -39 30 -68 30 -37 0 -52 -13 -404 -365 -339 -338 -368 -365 -400 -365 -32 0 -61 27 -400 365 -359 357 -367 365 -406 365 -27 0 -48 -7 -62 -20z'/></g></svg>";
+	
+	for(i=0; i < timerValues.length; i++){
+		var numberContainer = document.createElement("div");
+		var span = document.createElement("span");
+		span.className = "alarmItemSpan";
+		numberContainer.className = i == 1 ? "alarmDoublePoint" : "alarmSpan";
+		span.innerHTML = timerValues[i];
+		numberContainer.appendChild(span);
+		
+		if(i === 0){
+			numberContainer.insertAdjacentHTML("beforeend",listEditArrowHourUpSvg);
+			numberContainer.insertAdjacentHTML("beforeend",listEditArrowHourDownSvg);
+		}
+		
+		if(i === 2){
+			numberContainer.insertAdjacentHTML("beforeend",listEditArrowMinuteUpSvg);
+			numberContainer.insertAdjacentHTML("beforeend",listEditArrowMinuteDownSvg);
+		}
+		
+		listItem.appendChild(numberContainer);
+		
+	}
+	
+	//Alarm item Options
+	var listOptions = document.createElement("div");
+	var listMessage = document.createElement("input");
+	var listMessageLabel = document.createElement("span");
+	var listDays = document.createElement("ul");
+	var listOptionsSave = document.createElement("button");
+	var listOptionsAlarmActive = document.createElement("button");
+	
+	//On/Off switch button
+	listOptionsAlarmActive.className ="alarmItemActive";
+	listItem.appendChild(listOptionsAlarmActive);
+	
+	var days = ["M", "D", "M", "D", "F", "S", "S"]
+	for(i=0; i<7; i++){
+		var tmpLi = document.createElement("li");
+		tmpLi.innerHTML = days[i];
+		tmpLi.className = "daysItem";
+		tmpLi.value = i;
+		listDays.appendChild(tmpLi);
+	}
+	
+	listOptionsSave.textContent = "Save";
+	listMessageLabel.textContent = "Note";
+	
+	var hr = document.createElement("hr");
+	
+	alarmItemCounter++;
+	listItem.className = "alarmItem";
+	listItem.value = alarmItemCounter;
+	listArrow.className = "alarmItemDropDownArrow";
+	listOptions.className = "alarmItemOptions";
+	listMessage.className = "alarmItemInput";
+	listDays.className = "alarmItemDays";
+	listOptionsSave.className = "alarmItemOptionsSave";
+	listMessageLabel.className = "alarmItemInputLabel";
+	hr.className = "alarmSplit";
+	
+	listArrow.innerHTML = "<svg class='alarmItemArrowImg' version='1.0' viewBox='0 0 200.000000 200.000000' preserveAspectRatio='xMidYMid meet'><g transform='translate(0.000000,200.000000) scale(0.100000,-0.100000)' fill='#000000' stroke='none'><path d='M132 1470 c-29 -27 -37 -64 -23 -98 7 -16 202 -218 434 -450 393 -393 425 -422 457 -422 32 0 64 30 463 428 376 376 428 432 433 464 6 32 2 41 -24 68 -23 23 -39 30 -68 30 -37 0 -52 -13 -404 -365 -339 -338 -368 -365 -400 -365 -32 0 -61 27 -400 365 -359 357 -367 365 -406 365 -27 0 -48 -7 -62 -20z'/></g></svg>";
+	
+	listOptions.appendChild(listMessageLabel);
+	listOptions.appendChild(listMessage);
+	listOptions.appendChild(listDays);
+	listOptions.appendChild(listOptionsSave);
+	
+	listItem.appendChild(listArrow);
+	listItem.appendChild(listOptions);
+	
+	alarmList.appendChild(listItem);
+	alarmList.appendChild(hr);
+	
+	var selectedDays = [
+		{"day": "M", "selected": false},
+		{"day": "D", "selected": false},
+		{"day": "M", "selected": false},
+		{"day": "F", "selected": false},
+		{"day": "D", "selected": false},
+		{"day": "S", "selected": false},
+		{"day": "S", "selected": false}
+	];
+	alarmItemSaveVar.push({"row": alarmItemCounter,"dom": listItem,"active": true, "selected": false,"edit": false, "hours": timerValues[0], "minutes": timerValues[2], "note": "", "days": selectedDays});
+	
+}
+
+function updateAlarmItemTime(node, value){
+	value = addZeros(value.toString(), 2);	
+	node.innerHTML = value;
+}
+
+function getAlarmItemNode(node){
+	var alarmItem = node;
+	
+	while(!containsClass(alarmItem, "alarmItem")){
+		alarmItem = alarmItem.parentNode;
+	}
+	
+	return alarmItem;
+}
+
+function setAlarmItemSelected(node){
+	var alarmItem = getAlarmItemNode(node);
+
+	if(containsClass(alarmItem, "selected")){
+		removeClass(alarmItem, "selected");
+		alarmItemSaveVar[alarmItem.value - 1].selected = false;
+	}
+	else{
+		addClass(alarmItem, "selected");
+		alarmItemSaveVar[alarmItem.value - 1].selected = true;
+	
+	}
+}
+
+function setDaysSelected(node){
+	var alarmItem = getAlarmItemNode(node);
+	var nodeClassNames = node.className.split(" ");
+	
+	for(i= 0; i < nodeClassNames.length; i++){
+		if(nodeClassNames[i] === "selected"){
+			removeClass(node, "selected");
+			alarmItemSaveVar[alarmItem.value - 1].days[node.value].selected = false;
+		}
+		else{
+			addClass(node, "selected");
+			alarmItemSaveVar[alarmItem.value - 1].days[node.value].selected = true;
+		}
+	} 
+}
+
+function toggleAlarmItemActive(node, disabled){
+	var alarmItem = getAlarmItemNode(node);
+
+	if(containsClass(alarmItem, "disabled")){
+		removeClass(alarmItem, "disabled");
+	}
+	else{
+		addClass(alarmItem, "disabled");
+	
+	}
+	
+	alarmItemSaveVar[alarmItem.value - 1].active = false;
+}
+
+function toggleAlarmOptions(node, edit){
+	var alarmItem = getAlarmItemNode(node);
+
+	var alarmItemEditArrows = alarmItem.getElementsByClassName("alarmItemEditArrow");
+	
+	if(edit === true){
+		addClass(node, "opened")
+		//node.className.baseVal = "alarmItemArrowImg opened";
+		
+		if(node.parentNode.className === "alarmItemDropDownArrow"){
+			node.parentNode.nextElementSibling.style.display = "block";
+			
+			for(i=0; i < alarmItemEditArrows.length; i++){
+				removeClass(alarmItemEditArrows[i], "none");
+				addClass(alarmItemEditArrows[i], "inline-block");
+			}
+			 
+			alarmItemSaveVar[alarmItem.value - 1].edit = true;
+		}
+	}
+	else{
+		node.className.baseVal = "alarmItemArrowImg";
+		removeClass(node, "opened")
+		
+		if(node.parentNode.className === "alarmItemDropDownArrow"){
+			node.parentNode.nextElementSibling.style.display = "none";
+			
+ 			for(i=0; i < alarmItemEditArrows.length; i++){
+				removeClass(alarmItemEditArrows[i], "inline-block");
+				addClass(alarmItemEditArrows[i], "none");
+			}
+			
+			alarmItemSaveVar[alarmItem.value - 1].edit = false;
+		}
+	}
+}
+
+function editAlarmItem(node){
+	var alarmItem = getAlarmItemNode(node);
+	
+	var valueInnerHTML = Number(node.parentNode.children[0].innerHTML);
+	var itemValue = node.getAttribute("value");
+	
+	if(itemValue === "hUp"){
+		var value = 0;
+		if(valueInnerHTML === 24){
+			value = 0;
+		}
+		else{
+			value = valueInnerHTML + 1;
+		}
+
+		updateAlarmItemTime(node.parentNode.children[0], value);
+		
+		alarmItemSaveVar[alarmItem.value - 1].hours = node.parentNode.children[0].innerHTML;
+		
+	}
+	
+	if(itemValue === "hDown"){
+		var value = 0;
+		if(valueInnerHTML === 0){
+			value = 24;
+		}
+		else{
+			value = valueInnerHTML - 1;
+		}
+
+		updateAlarmItemTime(node.parentNode.children[0], value);
+		
+		alarmItemSaveVar[alarmItem.value - 1].hours = node.parentNode.children[0].innerHTML;
+	}
+	
+	if(itemValue === "mUp"){
+		var value = 0;
+		if(valueInnerHTML === 59){
+			value = 0;
+		}
+		else{
+			value = valueInnerHTML + 1;
+		}
+
+		updateAlarmItemTime(node.parentNode.children[0], value);
+		
+		alarmItemSaveVar[alarmItem.value - 1].minutes = node.parentNode.children[0].innerHTML;
+	}
+	
+	if(itemValue === "mDown"){
+		var value = 0;
+		if(valueInnerHTML === 0){
+			value = 59;
+		}
+		else{
+			value = valueInnerHTML - 1;
+		}
+
+		updateAlarmItemTime(node.parentNode.children[0], value);
+		
+		alarmItemSaveVar[alarmItem.value - 1].minutes = node.parentNode.children[0].innerHTML;
+	}
+	
+}
+
+function saveAlarmItemNote(node){
+	var alarmItem = getAlarmItemNode(node);
+	
+	alarmItemSaveVar[alarmItem.value - 1].note = node.parentNode.children[1].value;
+	console.log(alarmItemSaveVar);
+}
+
+function deleteAlarmItem(){
+	var deleteZero = false;
+	var itemDeleted = false;
+	for(i=alarmItemSaveVar.length - 1; i >= 0 ; i--){
+		if(alarmItemSaveVar[i].selected === true){
+			if(i == 0){
+				deleteZero = true;
+				//Hier an message für kein item ausgewählt arbeiten
+				itemDeleted = true;
+			}
+			else{
+				alarmItemSaveVar.splice(i, 1);
+			}
+		}
+	}
+	
+	if(deleteZero){
+		alarmItemSaveVar.shift();
+	}
+	
+	for(c=0; c< alarmItemSaveVar.length; c++){
+		alarmItemSaveVar[c].row =  c + 1; 
+		alarmItemSaveVar[c].dom.value = c + 1;
+	}
+	
+	alarmItemCounter = alarmItemSaveVar.length;
+	
+	console.log(alarmItemSaveVar);
+	
+	var selectedAlarmItems = document.getElementsByClassName("alarmItem selected");
+	
+	for(i=0; i < selectedAlarmItems.length;){
+		selectedAlarmItems[0].nextSibling.parentNode.removeChild(selectedAlarmItems[0].nextSibling);
+		selectedAlarmItems[i].parentNode.removeChild(selectedAlarmItems[i]);
+	}
+}
