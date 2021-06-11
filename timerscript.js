@@ -139,6 +139,159 @@ function updateTime(value, row){
 	}
 }
 
+function toggleArrows(visible){
+	if(visible){
+		for(i=0; i < timerArrows.length; i++){
+			addClass(timerArrows[i], "block")
+			removeClass(timerArrows[i], "none")
+		}
+	}
+	
+	else{
+		for(i=0; i < timerArrows.length; i++){
+			addClass(timerArrows[i], "none")
+			removeClass(timerArrows[i], "block")
+		}
+	}
+}
+
+function disableArrows(disabled){
+	if(disabled){
+		for(i=0; i < timerArrows.length; i++){
+			addClass(timerArrows[i], "disabled")
+		}
+	}
+	
+	else{
+		for(i=0; i < timerArrows.length; i++){
+			removeClass(timerArrows[i], "disabled")
+		}
+	}
+}
+
+function toggleAlarmScreen(visible){
+	var alarmScreen = document.getElementById("alarmScreen");
+	
+	if(visible){
+		addClass(alarmScreen, "inline-block");
+		removeClass(alarmScreen, "none");
+	}
+	else{
+		addClass(alarmScreen, "none");
+		removeClass(alarmScreen, "inline-block");
+	}
+}
+
+// activate/deactivate -> HH/MM/SS parameter(x)
+function toggleTimerItem(item, visible){
+	if(visible){	
+		for(i=0; i < timerItems.length; i++){
+			if(timerItems[i].id == item){
+				addClass(timerItems[i], "inline-block");
+				removeClass(timerItems[i], "none");
+			}
+		}
+	}
+	else{
+		for(i=0; i < timerItems.length; i++){
+			if(timerItems[i].id == item){
+				addClass(timerItems[i], "none");
+				removeClass(timerItems[i], "inline-block");
+			}
+		}
+	}
+}
+
+function change(mode){
+	var hoursCurrentValue = parseInt(timerHours.innerHTML);
+	var minutesCurrentValue = parseInt(timerMinutes.innerHTML);
+	var secondsCurrentValue = parseInt(timerSeconds.innerHTML);
+	
+	if(activeMode === "stopWatch"){
+		options.updateNumbersOnScreenStopWatch = false;
+	}
+	if(activeMode === "timer"){
+		options.updateNumbersOnScreenTimer = false;
+		timerSaveVar = {"hours": hoursCurrentValue, "minutes": minutesCurrentValue, "seconds": secondsCurrentValue};
+	}
+	if(activeMode === "alarm"){
+		alarmSaveVar = {"hours": hoursCurrentValue, "minutes": minutesCurrentValue};
+	}
+	
+	if(mode === "stopWatch"){
+		printLabel(mode);
+		toggleArrows(false);
+		toggleTimerItem("seconds", true);
+		toggleAlarmScreen(false);
+		toggleActionButtons(true);
+		timerNode.style.width = "86%"
+		
+		if(stopWatchSaveVar.hours){
+			updateTime(stopWatchSaveVar.hours,"hours");
+			updateTime(stopWatchSaveVar.minutes, "minutes");
+			updateTime(stopWatchSaveVar.seconds, "seconds");
+		}
+		else{
+			updateTime(0,"hours");
+			updateTime(0, "minutes");
+			updateTime(0, "seconds");
+		}
+		options.updateNumbersOnScreenStopWatch = true;
+		
+	}
+
+	if(mode === "timer"){
+		if(options.activeTimer == true){
+			disableArrows(true);
+		}
+		else{
+			disableArrows(false);
+		}
+		printLabel(mode);
+		toggleArrows(true);
+		toggleTimerItem("seconds", true);
+		toggleAlarmScreen(false);
+		toggleActionButtons(true);
+		timerNode.style.width = "86%"
+		
+		if(timerSaveVar.hours){
+			updateTime(timerSaveVar.hours,"hours");
+			updateTime(timerSaveVar.minutes, "minutes");
+			updateTime(timerSaveVar.seconds, "seconds");
+		}
+		else{
+			updateTime(0,"hours");
+			updateTime(0, "minutes");
+			updateTime(0, "seconds");
+		}
+		
+		options.updateNumbersOnScreenTimer = true;
+	}
+
+	if(mode === "alarm"){
+		disableArrows(false);
+		printLabel(mode);
+		toggleArrows(true);
+		toggleTimerItem("seconds", false);
+		toggleAlarmScreen(true);
+		toggleActionButtons(false);
+		timerNode.style.width = "57%"
+		
+		if(alarmSaveVar.hours){
+			updateTime(alarmSaveVar.hours,"hours");
+			updateTime(alarmSaveVar.minutes, "minutes");
+		}
+		else{
+			updateTime(0,"hours");
+			updateTime(0, "minutes");
+		}
+		
+	}
+	
+	activeMode = mode;
+	
+}
+
 function addZeros(string, lengthNumber){
 	var tmpString = string;
 	if(string.length === lengthNumber){
@@ -213,6 +366,8 @@ function toggleActionButtons(visible){
 		}
 	}
 }
+
+
 
 function start(){
 	if(activeMode === "stopWatch"){
