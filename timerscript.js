@@ -184,6 +184,24 @@ function containsClass(node, classStr) {
 	}
 }
 
+function toggleActionButtons(visible){
+	var controlButtons = document.getElementsByClassName("changeState");
+	
+	if(visible){
+		for(i=0; i < controlButtons.length; i++){
+			addClass(controlButtons[i], "inline-block")
+			removeClass(controlButtons[i], "none")
+		}
+	}
+	
+	else{
+		for(i=0; i < controlButtons.length; i++){
+			addClass(controlButtons[i], "none")
+			removeClass(controlButtons[i], "inline-block")
+		}
+	}
+}
+
 function start(){
 	if(activeMode === "stopWatch"){
 		if(options.activeStopWatch == true){
